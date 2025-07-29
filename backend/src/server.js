@@ -1,5 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv'
+import { connectDB } from './lib/db.js';
+
+import authRoutes from './routes/auth.route.js'
 
 //To run the env file we need to import dotenv package and config it
 dotenv.config();
@@ -9,18 +12,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-app.get('/api/auth/signup', (req, res) => {
-    res.send("Signup page");
-})
+app.use(express.json()); // this line helps to parse JSON request bodies
 
-app.get('/api/auth/login', (req, res) => {
-    res.send("Login page");
-})
-
-app.get('/api/auth/logout', (req, res) => {
-    res.send("Logout page");
-})
-
+app.use('/api/auth', authRoutes);
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    connectDB();
 })
