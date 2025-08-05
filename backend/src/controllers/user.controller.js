@@ -1,3 +1,4 @@
+import { messageSetPagination } from "stream-chat/dist/types/utils.js";
 import FriendRequest from "../models/friendReq.model.js";
 import User from "../models/user.model.js";
 
@@ -105,6 +106,38 @@ export async function acceptFriendRequest(req, res) {
         res.status(200).json({ message: "Friend request accepted" });
     } catch (error) {
         console.log("Error in acceptFriendRequest", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export async function getFriendRequest(req, res) {
+    try {
+        const incomingReq = await FriendRequest.find({
+            recipient: req.user.id,
+            status: "pending",
+        }).populate("sender", "fullName profilePic nativeLanguage learningLanguage");
+
+        const acceptedReq = await FriendRequest.find({
+            sender: req.user.id,
+            status: "accepted"
+        }).populate("recipient", "fullName profilePic");
+
+        res.status(200).json({ incomingReq, acceptedReq });
+    } catch (error) {
+        console.log("Error in getPendingFriendReq", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export async function getOutgoingFriendRequest(req, res) {
+    try {
+        const outgoingReq = await FriendRequest.find({
+            sender: req.user.id,
+            status: "pending"
+        }).populate("recipient", "fullName profilePic nativeLanguage learningLanguage");
+        res.status(200).json(outgoingReq);
+    } catch (error) {
+        console.log("Error in getOutgoingFriendRequest controller", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
 }
