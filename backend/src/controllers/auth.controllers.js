@@ -59,7 +59,7 @@ export async function signup(req, res) {
             secure : process.env.NODE_ENV === 'production' //secure when we are in production
         })
 
-        res.status(202).json({
+        res.status(201).json({
             success: true,
             user : newUser
         })
@@ -130,7 +130,7 @@ export async function onboard (req, res) {
         }, { new: true }); //give the user after updated is applied
 
         if (!updatedUser) return res.status(404).json({ message: "User not found." });
-        
+
         try {
             await upsertStremUser({
                 id: updatedUser._id.toString(),
