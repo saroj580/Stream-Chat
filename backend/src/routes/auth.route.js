@@ -8,6 +8,10 @@ router.post('/signup', signup);
 router.post('/login', login);
 router.post('/logout', logout);
 
+// future work
+//Forget-password 
+//send-reset-password-email
+
 router.post('/onboarding', protectRoute, onboard);
 //check if the user is logged in 
 router.get('/me', protectRoute, (req, res) => {
