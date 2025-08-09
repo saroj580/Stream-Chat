@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ShipWheelIcon } from 'lucide-react';
 import { Link } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { axiosInstance } from "../lib/axios";
+import { signup } from "../lib/api";
 
 const SignupPage = () => {
 
@@ -14,17 +14,14 @@ const SignupPage = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: async () => {
-      const response = await axiosInstance.post("/auth/signup", signupData);
-      return response.data;
-    },
+  const { mutate : signupMutation, isPending, error } = useMutation({
+    mutationFn: signup,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] })
   });
 
   const handleSignup = (e) => {
     e.preventDefault();
-    mutate();
+    signupMutation(signupData);
   }
 
   return (
@@ -37,7 +34,13 @@ const SignupPage = () => {
             <ShipWheelIcon className="size-9 text-primary" />
             <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">Streamify</span>
           </div>
-
+          
+          {/* Error message if any */}
+          {error && (
+            <div className="alert alert-error mb-4">
+              <span>{error.response.data.message}</span>
+            </div>
+          )}
           <div className="w-full">
             <form onSubmit={handleSignup}>
               <div className="space-y-4">
@@ -102,7 +105,12 @@ const SignupPage = () => {
 
                 {/* button */}
                 <button className="btn btn-primary w-full" type="submit">
-                  {isPending ? "Signing up..." : "Create Account"}
+                  {isPending ? (
+                    <>
+                      <span className="loading loading-spinner loading-xs"></span>
+                      loading...
+                    </>
+                  ) : ("Create Account")}
                 </button>
 
                 {/* if aleready have an account */}
