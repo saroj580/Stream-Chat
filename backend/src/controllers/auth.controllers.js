@@ -11,7 +11,7 @@ export async function signup(req, res) {
         if (password.length < 6) {
             return res.status(400).json({ message: "Password must be atLeast 6 characters" });
         }
-
+ 
         //check if the user sent the correct email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -56,7 +56,7 @@ export async function signup(req, res) {
             maxAge: 7 * 24 * 60 * 60 * 1000, //it should be in millisecond 
             httpOnly: true, //prevent XSS attacks
             sameSite: 'strict', //prevent CSRF attacks
-            secure : process.env.NODE_ENV === 'production' //secure when we are in production
+            secure : false //secure when we are in production
         })
 
         res.status(201).json({
@@ -89,7 +89,7 @@ export async function login(req, res) {
             maxAge: 7 * 24 * 60 * 60 * 1000, //it should be in millisecond 
             httpOnly: true, //prevent XSS attacks
             sameSite: 'strict', //prevent CSRF attacks
-            secure : process.env.NODE_ENV === 'production' //secure when we are in production
+            secure : false //secure when we are in production
         })
 
         res.status(200).json({success : true, user})
